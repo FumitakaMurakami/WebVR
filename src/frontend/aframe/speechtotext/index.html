@@ -1,0 +1,101 @@
+<!-- 
+参考資料
+https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
+
+ -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <script src="/api_key.js"></script> 
+  <script src="/main.js"></script>  
+  <script src="/dist/recorder.js"></script>
+  <script>
+    window.onload = function init() {
+    // オーディオコンテキストの初期化
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    // 音声入力の取得
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+       // レコーダーの生成
+       var input = audioContext.createMediaStreamSource(stream);
+       audioContext.resume();
+       recorder = new Recorder(input);
+       });
+      }
+    };
+    AFRAME.registerComponent("start", {
+      update: function () {
+
+        // 関数型についての講義
+        // let sum = 0;
+        // for(let i =0; i < SIZE.length;i++){
+        //   sum += SIZE[0]
+        // }
+        // console.log(sum);
+        //
+        // 関数型では集計のような作業も関数でおこなう
+        // それによってconstで完結する
+        // const sum = SIZE.reduce( (prv,cur)=>{ return prv + cur }, 0)
+
+        
+
+        this.el.addEventListener("click", function (evt) {
+          recorder && recorder.record()
+        });
+      },
+    });
+    AFRAME.registerComponent("stop", {
+      init: function () {
+        this.el.addEventListener("click", function (evt) {
+          recorder && recorder.stop()
+          // 音声認識
+          audioRecognize()
+          recorder.clear()
+          // レコーダーのクリア
+          /* recorder.recLength = 0;
+          recorder.getBuffer=[];
+          recorder.clear()
+          console.log("b",recorder.getBuffer); */
+        });
+      },
+
+    });
+  </script>
+
+  <body>
+    <ul id="output"></ul>
+    <a-scene>
+      <a-camera>
+        <!-- <a-cursor fuse="rayOrigin: mouse"></a-cursor> -->
+        <a-entity
+          cursor="rayOrigin: mouse; fuse:false"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: black; shader: flat"
+        >
+        </a-entity>
+      </a-camera>
+
+      <a-entity
+        geometry="primitive: box"
+        material="color: blue"
+        width="4"
+        height="4"
+        position="-2 0 -5"
+        start
+      ></a-image>
+      <a-entity
+        geometry="primitive: box"
+        material="color: red"
+        width="4"
+        height="4"
+        position="3 0 0"
+        stop
+      ></a-image>
+      <!-- <a-entity id="box" hello geometry="primitive: box" position="0 1 -5" material="color: blue" width = "5" height = "4"></a-entity> -->
+    </a-scene>
+  </body>
+</html>
+<!-- http-server -->

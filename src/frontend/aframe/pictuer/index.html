@@ -1,0 +1,107 @@
+<!-- 
+参考資料
+https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
+
+ -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <script>
+    AFRAME.registerComponent("hello", {
+      init: function () {
+        let lastIndex = 0;
+        const SIZE = [1, 2, 3, 4];
+
+        // 関数型についての講義
+        // let sum = 0;
+        // for(let i =0; i < SIZE.length;i++){
+        //   sum += SIZE[0]
+        // }
+        // console.log(sum);
+        //
+        // 関数型では集計のような作業も関数でおこなう
+        // それによってconstで完結する
+        // const sum = SIZE.reduce( (prv,cur)=>{ return prv + cur }, 0)
+
+        const self = this;
+
+        this.el.addEventListener("click", function (evt) {
+          if (SIZE[lastIndex] != 4) {
+            lastIndex = lastIndex + 1;
+            // self.el.setAttribute("width", SIZE[lastIndex]);
+            // self.el.setAttribute("height", SIZE[lastIndex]);
+            self.el.object3D.scale.x = SIZE[lastIndex];
+            self.el.object3D.scale.y = SIZE[lastIndex];
+
+            // https://threejs.org/
+            const threev3 = new THREE.Vector3(0, 0, 0);
+            console.log(threev3);
+
+            console.log(SIZE[lastIndex]);
+          } else {
+            lastIndex = 0;
+            self.el.setAttribute("width", SIZE[lastIndex]);
+            self.el.setAttribute("height", SIZE[lastIndex]);
+            console.log(SIZE[lastIndex]);
+          }
+        });
+      },
+      /* init: function(){
+      this.isClicked = false;
+
+      this.el.onclick = ()=>{
+        this.isClicked = !this.isClicked;
+      }
+      
+    },
+    tick: function (time, timeDelta) {
+      if(this.isClicked){
+        if(this.el.getAttribute("width")>=0){
+          const width = this.el.getAttribute("width");
+          const height = this.el.getAttribute("height");
+          updatewidth = width - 0.01
+          this.el.setAttribute("width",updatewidth)
+          updateheight = height - 0.01
+          this.el.setAttribute("height",updateheight)
+          console.log("a")  
+        } 
+        else{
+          const width = this.el.getAttribute("width");
+          const height = this.el.getAttribute("height");
+          updatewidth = width + 0.01
+          this.el.setAttribute("width",updatewidth)
+          updateheight = height + 0.01
+          this.el.setAttribute("height",updateheight)
+          console.log("a")  
+        }   
+      }
+    } */
+    });
+  </script>
+  <body>
+    <a-scene>
+      <a-camera>
+        <!-- <a-cursor fuse="rayOrigin: mouse"></a-cursor> -->
+        <a-entity
+          cursor="rayOrigin: mouse; fuse:true"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: black; shader: flat"
+        >
+        </a-entity>
+      </a-camera>
+
+      <a-image
+        src="test.png"
+        width="4"
+        height="4"
+        position="0 -0.2 -5"
+        hello
+      ></a-image>
+      <!-- <a-entity id="box" hello geometry="primitive: box" position="0 1 -5" material="color: blue" width = "5" height = "4"></a-entity> -->
+    </a-scene>
+  </body>
+</html>
+<!-- http-server -->

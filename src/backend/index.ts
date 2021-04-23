@@ -10,14 +10,13 @@ tsconfig.sv.json
 axios フロントのライブラリ
 */
 
-app.use(express.static(__dirname +'/speechtotext'));
+app.use(express.static(__dirname + "/speechtotext"));
 
-app.get("/",(req,res)=>{
-    console.log("Hello"+__dirname);
-    res.sendFile(path.join(__dirname + '/speechtotext/main.html'));
-    
+app.get("/", (req, res) => {
+  console.log("Hello!!" + __dirname);
+  res.sendFile(path.join(__dirname + "/speechtotext/main.html"));
 });
 
-app.listen(3001,()=>{
-    console.log("Node server start");
+app.listen(3001, () => {
+  console.log("Node server start");
 });
