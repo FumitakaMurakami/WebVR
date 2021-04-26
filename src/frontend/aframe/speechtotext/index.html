@@ -8,26 +8,25 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
     <meta charset="utf-8" />
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
   </head>
-  <script src="/api_key.js"></script> 
-  <script src="/main.js"></script>  
+  <script src="/api_key.js"></script>
+  <script src="/main.js"></script>
   <script src="/dist/recorder.js"></script>
   <script>
     window.onload = function init() {
-    // オーディオコンテキストの初期化
+      // オーディオコンテキストの初期化
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    // 音声入力の取得
+      // 音声入力の取得
       if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-      navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-       // レコーダーの生成
-       var input = audioContext.createMediaStreamSource(stream);
-       audioContext.resume();
-       recorder = new Recorder(input);
-       });
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          // レコーダーの生成
+          var input = audioContext.createMediaStreamSource(stream);
+          audioContext.resume();
+          recorder = new Recorder(input);
+        });
       }
     };
     AFRAME.registerComponent("start", {
-      update: function () {
-
+      update: function() {
         // 関数型についての講義
         // let sum = 0;
         // for(let i =0; i < SIZE.length;i++){
@@ -39,20 +38,18 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
         // それによってconstで完結する
         // const sum = SIZE.reduce( (prv,cur)=>{ return prv + cur }, 0)
 
-        
-
-        this.el.addEventListener("click", function (evt) {
-          recorder && recorder.record()
+        this.el.addEventListener("click", function(evt) {
+          recorder && recorder.record();
         });
       },
     });
     AFRAME.registerComponent("stop", {
-      init: function () {
-        this.el.addEventListener("click", function (evt) {
-          recorder && recorder.stop()
+      init: function() {
+        this.el.addEventListener("click", function(evt) {
+          recorder && recorder.stop();
           // 音声認識
-          audioRecognize()
-          recorder.clear()
+          audioRecognize();
+          recorder.clear();
           // レコーダーのクリア
           /* recorder.recLength = 0;
           recorder.getBuffer=[];
@@ -60,7 +57,23 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
           console.log("b",recorder.getBuffer); */
         });
       },
-
+    });
+    AFRAME.registerComponent("soundon", {
+      init: function() {
+        let counter = 1;
+        const self = this;
+        this.el.addEventListener("click", function(evt) {
+          if (counter == 1) {
+            self.el.setAttribute("sound", "src: sample.mp3; autoplay: true");
+            console.log("sound on");
+            counter = 0;
+          } else {
+            //self.el.setAttribute("material", "src", "#music_off");
+            console.log("sound off");
+            counter = 1;
+          }
+        });
+      },
     });
   </script>
 
@@ -75,10 +88,11 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
           geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
           material="color: black; shader: flat"
         >
+          <!-- <a-sound src="src: url(sample.mp3)" autoplay="true" position="0 2 5"></a-sound> -->
         </a-entity>
       </a-camera>
 
-      <a-entity
+           <a-entity
         geometry="primitive: box"
         material="color: blue"
         width="4"
@@ -94,6 +108,14 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
         position="3 0 0"
         stop
       ></a-image>
+      <a-entity
+        geometry="primitive: box"
+        material="color: green"
+        width="4"
+        height="4"
+        position="4 0 0"
+        soundon
+      ></a-entity>
       <!-- <a-entity id="box" hello geometry="primitive: box" position="0 1 -5" material="color: blue" width = "5" height = "4"></a-entity> -->
     </a-scene>
   </body>

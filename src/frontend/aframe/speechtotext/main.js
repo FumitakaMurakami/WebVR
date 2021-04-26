@@ -26,6 +26,7 @@ function audioRecognize() {
   recorder &&
     recorder.exportWAV(function(blob) {
       let reader = new FileReader();
+      let returntext;
       reader.onload = function() {
         // 音声認識
         let result = new Uint8Array(reader.result);
@@ -57,7 +58,8 @@ function audioRecognize() {
             // 音声認識結果の表示
             text = result_json.results[0].alternatives[0].transcript;
             output.innerHTML += "\n" + text;
-            console.log("result: " + text);
+            returntext = text;
+            console.log("result: " + returntext);
           });
       };
       reader.readAsArrayBuffer(blob);
