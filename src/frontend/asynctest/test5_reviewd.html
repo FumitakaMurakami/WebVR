@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>async test</title>
+  </head>
+  <script>
+    (async function() {
+      async function getUserData() {
+        let data = {
+          config: {
+            languageCode: "ja-JP",
+          },
+        };
+        return fetch("http://localhost:3001/v1/user")
+          .then(function(response) {
+            return response.text();
+          })
+          .then(function(text) {
+            console.log("in fetch");
+
+            // null などの判定について
+            const testData = { size: 0 };
+            if (testData) {
+              console.log("testData is not null");
+            }
+            if (testData.name) {
+              console.log("testData.name is not null");
+            } else {
+              // undefined | null | "" | 0  ==> false
+              console.log("testData.name is null");
+            }
+
+            // 基本は===（!==)で等価を見るべき
+            if (testData.size === "0") {
+              console.log("testData.size is 0");
+            } else {
+              console.log("testData.size is not string 0");
+            }
+
+            if (!text) {
+              return text;
+            } else {
+              throw Error("nodata");
+            }
+          });
+      }
+
+      try {
+        const result = await getUserData(); // await で同期処理にする
+        console.log(result);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  </script>
+  <body></body>
+</html>

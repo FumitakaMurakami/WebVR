@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>async test</title>
+  </head>
+  <script>
+    // 初期の非同期処理
+    // let sum = 0;
+    // function targetFunc() {
+    //   sum += 1;
+    //   console.log(sum);
+    //   if (sum > 10) {
+    //     clearInterval(id);
+    //   }
+    // }
+    // const id = setInterval(targetFunc, 1000);
+
+    let sum = 100;
+    const newPromise = new Promise((resolve, reject) => {
+      if (sum > 10) {
+        resolve();
+      }
+
+      if (sum < 0) {
+        reject();
+      }
+    });
+
+    newPromise
+      .then(() => {
+        console.log("成功");
+      })
+      .catch(() => {
+        console.log("失敗");
+      });
+  </script>
+  <body></body>
+</html>

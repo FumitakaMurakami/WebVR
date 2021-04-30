@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>async test</title>
+  </head>
+  <script>
+    (async function() {
+      async function getJudge(sum) {
+        const newPromise = new Promise(async (resolve, reject) => {
+          // スリープするための関数
+          const sleep = (msec) =>
+            new Promise((resolve) => setTimeout(resolve, msec));
+
+          // 100ミリビョウスリープ
+          await sleep(1000);
+
+          if (sum > 10) {
+            resolve("成功しました");
+          }
+
+          if (sum < 0) {
+            reject("失敗しました");
+          }
+        });
+        return newPromise;
+      }
+
+      // // １００回ループ
+      // for (let i = 0; i < 100; i++) {
+      //   console.log(i);
+
+      //   if (i === 10) {
+      //     getJudge(100).then((result) => {
+      //       console.log(result);
+      //     });
+      //   }
+      // }
+
+      // １００回ループ await
+      for (let i = 0; i < 100; i++) {
+        console.log(i);
+
+        if (i === 10) {
+          const result = await getJudge(100);
+          console.log(result);
+        }
+      }
+
+      try {
+        const result = await getJudge(-1); // await で同期処理にする
+        console.log("await 後のresult ", result);
+      } catch (e) {
+        console.log("catch 句のe", e);
+      }
+    })();
+  </script>
+  <body></body>
+</html>

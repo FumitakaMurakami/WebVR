@@ -1,0 +1,88 @@
+<!-- 
+参考資料
+https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
+
+ -->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  </head>
+  <script src="/api_key.js"></script>
+  <script src="/main.js"></script>
+  <script src="/command.js"></script>
+  <script src="/dist/recorder.js"></script>
+  <script>
+    
+    window.onload = function init() {
+      // オーディオコンテキストの初期化
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      // 音声入力の取得
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+          // レコーダーの生成
+          var input = audioContext.createMediaStreamSource(stream);
+          audioContext.resume();
+          recorder = new Recorder(input);
+        });
+      }
+    };
+    AFRAME.registerComponent("command", {
+      
+      update: function() {
+        this.el.addEventListener("click", async function(evt) {
+          recorder && recorder.record();
+          console.log("record")
+          setTimeout(async () => {
+            console.log("stop")
+            //const textbox = document.querySelector('#text-box');
+            recorder && recorder.stop();
+            // 音声認識
+            const text = await audioRecognize();
+            //textbox.setAttribute('value', text);
+            await voiceCommand(text);
+            recorder.clear();
+          }, 5000);
+        });
+      },
+    });
+
+  </script>
+
+  <body>
+    <ul id="output"></ul>
+    <a-scene>
+      <a-camera>
+        <!-- <a-cursor fuse="rayOrigin: mouse"></a-cursor> -->
+        <a-entity
+          cursor="rayOrigin: mouse; fuse:false"
+          position="0 0 -1"
+          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+          material="color: black; shader: flat"
+        >
+          <!-- <a-sound src="src: url(sample.mp3)" autoplay="true" position="0 2 5"></a-sound> -->
+        </a-entity>
+      </a-camera>
+
+           <a-entity
+        geometry="primitive: box"
+        material="color: blue"
+        width="4"
+        height="4"
+        position="-2 0 -5"
+        command
+      ></a-image>
+      
+      <a-text 
+        id="text-box" 
+        position="-1 1.25 -3"  
+        value="こんにちは世界！" 
+        font="noto-sans-cjk-jp-msdf.json"
+        font-image="noto-sans-cjk-jp-msdf.png" 
+        color="black"
+      ></a-text>
+      <!-- <a-entity id="box" hello geometry="primitive: box" position="0 1 -5" material="color: blue" width = "5" height = "4"></a-entity> -->
+    </a-scene>
+  </body>
+</html>
+<!-- http-server -->
