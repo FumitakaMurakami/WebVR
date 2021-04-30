@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>async test</title>
+  </head>
+  <script>
+    (async function() {
+      async function getUserData() {
+        const newPromise = new Promise(async (resolve, reject) => {
+          let data = {
+            config: {
+              languageCode: "ja-JP",
+            },
+          };
+          fetch("http://localhost:3001/v1/user")
+            .then(function(response) {
+              return response.text();
+            })
+            .then(function(text) {
+              if (text != null) {
+                resolve(text);
+              } else {
+                reject("nodata");
+              }
+            });
+        });
+        return newPromise;
+      }
+
+      try {
+        const result = await getUserData(); // await で同期処理にする
+        console.log(result);
+      } catch (e) {
+        console.log(e);
+      }
+    })();
+  </script>
+  <body></body>
+</html>

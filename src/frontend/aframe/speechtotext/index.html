@@ -12,6 +12,7 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
   <script src="/main.js"></script>
   <script src="/dist/recorder.js"></script>
   <script>
+    
     window.onload = function init() {
       // オーディオコンテキストの初期化
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -45,10 +46,13 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
     });
     AFRAME.registerComponent("stop", {
       init: function() {
-        this.el.addEventListener("click", function(evt) {
+        this.el.addEventListener("click", async function(evt) {
+          const textbox = document.querySelector('#text-box');
           recorder && recorder.stop();
           // 音声認識
-          audioRecognize();
+          const text = await audioRecognize();
+          console.log("戻り値は"+text)
+          textbox.setAttribute('value', text);
           recorder.clear();
           // レコーダーのクリア
           /* recorder.recLength = 0;
@@ -64,11 +68,14 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
         const self = this;
         this.el.addEventListener("click", function(evt) {
           if (counter == 1) {
-            self.el.setAttribute("sound", "src: sample.mp3; autoplay: true");
+            self.el.components.sound.playSound();
+            
             console.log("sound on");
             counter = 0;
           } else {
             //self.el.setAttribute("material", "src", "#music_off");
+            self.el.components.sound.stopSound();
+            
             console.log("sound off");
             counter = 1;
           }
@@ -114,8 +121,17 @@ https://aframe.io/docs/1.2.0/introduction/writing-a-component.html
         width="4"
         height="4"
         position="4 0 0"
+        sound="src: sample.mp3; autoplay: false"
         soundon
       ></a-entity>
+      <a-text 
+        id="text-box" 
+        position="-1 1.25 -3"  
+        value="こんにちは世界！" 
+        font="noto-sans-cjk-jp-msdf.json"
+        font-image="noto-sans-cjk-jp-msdf.png" 
+        color="black"
+      ></a-text>
       <!-- <a-entity id="box" hello geometry="primitive: box" position="0 1 -5" material="color: blue" width = "5" height = "4"></a-entity> -->
     </a-scene>
   </body>
